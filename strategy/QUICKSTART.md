@@ -18,9 +18,63 @@
 
 ---
 
+
+## Codex + VS Code Usage Pattern
+
+Use this sequence for reliable orchestration in Codex sessions:
+
+1. **Open the correct workspace root** in VS Code before starting Codex (so relative paths, tests, and handoffs stay consistent).
+2. **Start with one orchestration prompt** (NEXUS-Full/Sprint/Micro) and require explicit deliverables per phase.
+3. **Request structured handoffs** between agents using: Context → Decisions → Open Risks → Next Owner.
+4. **Keep one running thread per workstream** (feature, bug, campaign) to preserve state and reduce context drift.
+5. **Close each loop with evidence** (tests, screenshots, metrics) before asking Codex to advance phases.
+
+### Codex-Oriented Prompt Templates
+
+#### Workspace kickoff (VS Code)
+
+```
+You are operating inside this VS Code workspace.
+Activate Agents Orchestrator in NEXUS-Sprint mode for: [FEATURE/PROJECT].
+Use only files in this workspace as source of truth.
+
+Output in this order:
+1) Phase plan with owners
+2) Immediate Task 1 implementation plan
+3) First handoff in format: Context / Decisions / Risks / Next Owner
+```
+
+#### Implementation + QA loop
+
+```
+Activate Frontend Developer for task: [TASK].
+After implementation, activate API Tester and Evidence Collector.
+Do not mark complete until tests pass and evidence is attached.
+Return a handoff block: Context / Decisions / Risks / Next Owner.
+```
+
+#### Multi-agent handoff enforcement
+
+```
+For every agent transition, produce a handoff with:
+- Context received
+- Work completed
+- Decisions made
+- Known risks / unknowns
+- Next owner + exact requested action
+```
+
+## Migration Note (Claude/Cursor → Codex)
+
+- **What stays identical:** agent markdown files, NEXUS phases, quality gates, and handoff structure all transfer directly.
+- **What to rename:** replace tool-specific language like “Claude session” or “Cursor chat” with “Codex session” / “VS Code Codex chat”.
+- **Where to store agent files in Codex workflows:** keep the repo in your project workspace and optionally mirror agents to `~/.codex/agents` for reusable local activation.
+
+---
+
 ## 🚀 NEXUS-Full: Start a Complete Project
 
-**Copy this prompt to activate the full pipeline:**
+**Copy-paste prompt (Codex chat or VS Code Codex panel):**
 
 ```
 Activate Agents Orchestrator in NEXUS-Full mode.
@@ -45,7 +99,7 @@ Maximum 3 retries per task before escalation.
 
 ## 🏃 NEXUS-Sprint: Build a Feature or MVP
 
-**Copy this prompt:**
+**Copy-paste prompt (Codex session):**
 
 ```
 Activate Agents Orchestrator in NEXUS-Sprint mode.
@@ -70,7 +124,7 @@ Reality Checker approval required before launch.
 
 ## 🎯 NEXUS-Micro: Do a Specific Task
 
-**Pick your scenario and copy the prompt:**
+**Pick your scenario and copy-paste into Codex:**
 
 ### Fix a Bug
 ```

@@ -24,15 +24,31 @@ Born from a Reddit thread and months of iteration, **The Agency** is a growing c
 
 ## ⚡ Quick Start
 
-### Option 1: Use with Claude Code (Recommended)
+### Option 1: Install Agents Locally (Tool-Neutral)
 
 ```bash
-# Copy agents to your Claude Code directory
-cp -r agency-agents/* ~/.claude/agents/
+# Clone the repo (if you have not already)
+git clone https://github.com/msitarzewski/agency-agents.git
+cd agency-agents
 
-# Now activate any agent in your Claude Code sessions:
-# "Hey Claude, activate Frontend Developer mode and help me build a React component"
+# Optional: generate integration files for supported tools
+./scripts/convert.sh
 ```
+
+Then choose your runtime:
+
+- **Claude Code**
+  ```bash
+  mkdir -p ~/.claude/agents
+  cp -r ./* ~/.claude/agents/
+  ```
+- **Codex in VS Code**
+  ```bash
+  mkdir -p ~/.codex/agents
+  cp -r ./* ~/.codex/agents/
+  ```
+  Open your project workspace in VS Code and start Codex with an orchestration prompt such as:
+  `Activate Agents Orchestrator in NEXUS-Sprint mode for this workspace and produce a step-by-step plan + first handoff.`
 
 ### Option 2: Use as Reference
 
