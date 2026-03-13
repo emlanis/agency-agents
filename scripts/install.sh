@@ -11,6 +11,7 @@
 #
 # Tools:
 #   claude-code  -- Copy agents to ~/.claude/agents/
+#   codex        -- Copy agents to ~/.codex/agents/ (and .vscode/agents/ when present)
 #   copilot      -- Copy agents to ~/.github/agents/
 #   antigravity  -- Copy skills to ~/.gemini/antigravity/skills/
 #   gemini-cli   -- Install extension to ~/.gemini/extensions/agency-agents/
@@ -81,7 +82,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 INTEGRATIONS="$REPO_ROOT/integrations"
 
-ALL_TOOLS=(claude-code copilot antigravity gemini-cli opencode openclaw cursor aider windsurf)
+ALL_TOOLS=(claude-code codex copilot antigravity gemini-cli opencode openclaw cursor aider windsurf)
 
 # ---------------------------------------------------------------------------
 # Usage
@@ -105,6 +106,7 @@ check_integrations() {
 # Tool detection
 # ---------------------------------------------------------------------------
 detect_claude_code() { [[ -d "${HOME}/.claude" ]]; }
+detect_codex()        { command -v codex >/dev/null 2>&1 || [[ -d "${HOME}/.codex" ]] || [[ -d "${PWD}/.vscode" ]]; }
 detect_copilot()      { command -v code >/dev/null 2>&1 || [[ -d "${HOME}/.github" ]]; }
 detect_antigravity()  { [[ -d "${HOME}/.gemini/antigravity/skills" ]]; }
 detect_gemini_cli()   { command -v gemini >/dev/null 2>&1 || [[ -d "${HOME}/.gemini" ]]; }
@@ -117,6 +119,7 @@ detect_windsurf()     { command -v windsurf >/dev/null 2>&1 || [[ -d "${HOME}/.c
 is_detected() {
   case "$1" in
     claude-code) detect_claude_code ;;
+    codex)       detect_codex       ;;
     copilot)     detect_copilot     ;;
     antigravity) detect_antigravity ;;
     gemini-cli)  detect_gemini_cli  ;;
@@ -133,6 +136,7 @@ is_detected() {
 tool_label() {
   case "$1" in
     claude-code) printf "%-14s  %s" "Claude Code"  "(claude.ai/code)"        ;;
+    codex)       printf "%-14s  %s" "Codex"        "(~/.codex/agents)"       ;;
     copilot)     printf "%-14s  %s" "Copilot"      "(~/.github/agents)"      ;;
     antigravity) printf "%-14s  %s" "Antigravity"  "(~/.gemini/antigravity)" ;;
     gemini-cli)  printf "%-14s  %s" "Gemini CLI"   "(gemini extension)"      ;;
@@ -196,7 +200,7 @@ interactive_select() {
     # --- controls ---
     printf "\n"
     printf "  ------------------------------------------------\n"
-    printf "  ${C_CYAN}[1-9]${C_RESET} toggle   ${C_CYAN}[a]${C_RESET} all   ${C_CYAN}[n]${C_RESET} none   ${C_CYAN}[d]${C_RESET} detected\n"
+    printf "  ${C_CYAN}[1-%s]${C_RESET} toggle   ${C_CYAN}[a]${C_RESET} all   ${C_CYAN}[n]${C_RESET} none   ${C_CYAN}[d]${C_RESET} detected\n" "${#ALL_TOOLS[@]}"
     printf "  ${C_GREEN}[Enter]${C_RESET} install   ${C_RED}[q]${C_RESET} quit\n"
     printf "\n"
     printf "  >> "
@@ -296,6 +300,46 @@ install_copilot() {
     done < <(find "$REPO_ROOT/$dir" -name "*.md" -type f -print0)
   done
   ok "Copilot: $count agents -> $dest"
+}
+
+install_codex() {
+  local dest_home="${HOME}/.codex/agents"
+  local dest_vscode="${PWD}/.vscode/agents"
+  local count_home=0
+  local count_vscode=0
+
+  mkdir -p "$dest_home"
+
+  local dir f first_line
+  for dir in design engineering game-development marketing paid-media sales product project-management \
+              testing support spatial-computing specialized; do
+    [[ -d "$REPO_ROOT/$dir" ]] || continue
+    while IFS= read -r -d '' f; do
+      first_line="$(head -1 "$f")"
+      [[ "$first_line" == "---" ]] || continue
+      cp "$f" "$dest_home/"
+      (( count_home++ )) || true
+    done < <(find "$REPO_ROOT/$dir" -name "*.md" -type f -print0)
+  done
+  ok "Codex: $count_home agents -> $dest_home"
+
+  if [[ -d "${PWD}/.vscode" ]]; then
+    mkdir -p "$dest_vscode"
+    for dir in design engineering game-development marketing paid-media sales product project-management \
+                testing support spatial-computing specialized; do
+      [[ -d "$REPO_ROOT/$dir" ]] || continue
+      while IFS= read -r -d '' f; do
+        first_line="$(head -1 "$f")"
+        [[ "$first_line" == "---" ]] || continue
+        cp "$f" "$dest_vscode/"
+        (( count_vscode++ )) || true
+      done < <(find "$REPO_ROOT/$dir" -name "*.md" -type f -print0)
+    done
+    ok "Codex: $count_vscode agents -> $dest_vscode"
+    warn "Codex: VS Code agents are project-scoped; run from your project root."
+  else
+    warn "Codex: .vscode/ not found in current directory (skipped project-scoped install)."
+  fi
 }
 
 install_antigravity() {
@@ -413,6 +457,7 @@ install_windsurf() {
 install_tool() {
   case "$1" in
     claude-code) install_claude_code ;;
+    codex)       install_codex       ;;
     copilot)     install_copilot     ;;
     antigravity) install_antigravity ;;
     gemini-cli)  install_gemini_cli  ;;
