@@ -62,6 +62,8 @@ Browse the agents below and copy/adapt the ones you need!
 
 See the [Multi-Tool Integrations](#-multi-tool-integrations) section below for full details.
 
+If you want a VS Code + GitHub workflow for Codex-driven contributions, start here: [VS Code + GitHub Setup for Codex](integrations/codex/VSCODE-GITHUB-SETUP.md).
+
 ---
 
 ## 🎨 The Agency Roster
@@ -452,6 +454,8 @@ Each agent is designed with:
 ## 🔌 Multi-Tool Integrations
 
 The Agency works natively with Claude Code, and ships conversion + install scripts so you can use the same agents across every major agentic coding tool.
+
+For a practical local contribution loop in VS Code (fork/clone, Codex sessions, PR flow, and troubleshooting), see [VS Code + GitHub Setup for Codex](integrations/codex/VSCODE-GITHUB-SETUP.md).
 
 ### Supported Tools
 
