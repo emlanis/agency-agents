@@ -5,6 +5,7 @@ supported agentic coding tools.
 
 ## Supported Tools
 
+- **[Codex](#codex)** — `.md` agents installed to `~/.codex/agents/agency-agents/`
 - **[Claude Code](#claude-code)** — `.md` agents, use the repo directly
 - **[GitHub Copilot](#github-copilot)** — `.md` agents, use the repo directly
 - **[Antigravity](#antigravity)** — `SKILL.md` per agent in `antigravity/`
@@ -26,6 +27,7 @@ supported agentic coding tools.
 ./scripts/install.sh --tool gemini-cli
 ./scripts/install.sh --tool copilot
 ./scripts/install.sh --tool openclaw
+./scripts/install.sh --tool codex
 ./scripts/install.sh --tool claude-code
 ```
 
@@ -40,6 +42,20 @@ If you add or modify agents, regenerate all integration files:
 ```bash
 ./scripts/convert.sh
 ```
+
+---
+
+## Codex
+
+Use native `.md` agents with Codex in VS Code.
+
+```bash
+./scripts/install.sh --tool codex
+```
+
+This installs to `$CODEX_HOME/agents/agency-agents/` (or `~/.codex/agents/agency-agents/`).
+
+See [codex/README.md](codex/README.md) for details.
 
 ---
 
