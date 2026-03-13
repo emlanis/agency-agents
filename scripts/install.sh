@@ -10,6 +10,7 @@
 #   ./scripts/install.sh [--tool <name>] [--interactive] [--no-interactive] [--help]
 #
 # Tools:
+#   codex        -- Copy agents to ~/.codex/agents/agency-agents/
 #   claude-code  -- Copy agents to ~/.claude/agents/
 #   copilot      -- Copy agents to ~/.github/agents/
 #   antigravity  -- Copy skills to ~/.gemini/antigravity/skills/
@@ -81,7 +82,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 INTEGRATIONS="$REPO_ROOT/integrations"
 
-ALL_TOOLS=(claude-code copilot antigravity gemini-cli opencode openclaw cursor aider windsurf)
+ALL_TOOLS=(codex claude-code copilot antigravity gemini-cli opencode openclaw cursor aider windsurf)
 
 # ---------------------------------------------------------------------------
 # Usage
@@ -104,6 +105,7 @@ check_integrations() {
 # ---------------------------------------------------------------------------
 # Tool detection
 # ---------------------------------------------------------------------------
+detect_codex()       { [[ -d "${HOME}/.codex" ]] || [[ -n "${CODEX_HOME:-}" ]]; }
 detect_claude_code() { [[ -d "${HOME}/.claude" ]]; }
 detect_copilot()      { command -v code >/dev/null 2>&1 || [[ -d "${HOME}/.github" ]]; }
 detect_antigravity()  { [[ -d "${HOME}/.gemini/antigravity/skills" ]]; }
@@ -116,6 +118,7 @@ detect_windsurf()     { command -v windsurf >/dev/null 2>&1 || [[ -d "${HOME}/.c
 
 is_detected() {
   case "$1" in
+    codex)       detect_codex       ;;
     claude-code) detect_claude_code ;;
     copilot)     detect_copilot     ;;
     antigravity) detect_antigravity ;;
@@ -132,6 +135,7 @@ is_detected() {
 # Fixed-width labels: name (14) + detail (24) = 38 visible chars
 tool_label() {
   case "$1" in
+    codex)       printf "%-14s  %s" "Codex"        "(~/.codex/agents)"      ;;
     claude-code) printf "%-14s  %s" "Claude Code"  "(claude.ai/code)"        ;;
     copilot)     printf "%-14s  %s" "Copilot"      "(~/.github/agents)"      ;;
     antigravity) printf "%-14s  %s" "Antigravity"  "(~/.gemini/antigravity)" ;;
@@ -196,7 +200,7 @@ interactive_select() {
     # --- controls ---
     printf "\n"
     printf "  ------------------------------------------------\n"
-    printf "  ${C_CYAN}[1-9]${C_RESET} toggle   ${C_CYAN}[a]${C_RESET} all   ${C_CYAN}[n]${C_RESET} none   ${C_CYAN}[d]${C_RESET} detected\n"
+    printf "  ${C_CYAN}[1-%s]${C_RESET} toggle   ${C_CYAN}[a]${C_RESET} all   ${C_CYAN}[n]${C_RESET} none   ${C_CYAN}[d]${C_RESET} detected\n" "${#ALL_TOOLS[@]}"
     printf "  ${C_GREEN}[Enter]${C_RESET} install   ${C_RED}[q]${C_RESET} quit\n"
     printf "\n"
     printf "  >> "
@@ -262,7 +266,31 @@ interactive_select() {
 # Installers
 # ---------------------------------------------------------------------------
 
+install_codex() {
+  local base="${CODEX_HOME:-${HOME}/.codex}"
+  local dest="${base}/agents/agency-agents"
+  local count=0
+  mkdir -p "$dest"
+
+  local dir f first_line
+  for dir in design engineering game-development marketing paid-media sales product project-management \
+              testing support spatial-computing specialized; do
+    [[ -d "$REPO_ROOT/$dir" ]] || continue
+    mkdir -p "$dest/$dir"
+    while IFS= read -r -d '' f; do
+      first_line="$(head -1 "$f")"
+      [[ "$first_line" == "---" ]] || continue
+      cp "$f" "$dest/$dir/"
+      (( count++ )) || true
+    done < <(find "$REPO_ROOT/$dir" -name "*.md" -type f -print0)
+  done
+
+  cp "$REPO_ROOT/README.md" "$dest/README.md"
+  ok "Codex: $count agents -> $dest"
+}
+
 install_claude_code() {
+
   local dest="${HOME}/.claude/agents"
   local count=0
   mkdir -p "$dest"
@@ -412,6 +440,7 @@ install_windsurf() {
 
 install_tool() {
   case "$1" in
+    codex)       install_codex       ;;
     claude-code) install_claude_code ;;
     copilot)     install_copilot     ;;
     antigravity) install_antigravity ;;

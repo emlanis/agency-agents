@@ -24,17 +24,32 @@ Born from a Reddit thread and months of iteration, **The Agency** is a growing c
 
 ## ⚡ Quick Start
 
-### Option 1: Use with Claude Code (Recommended)
+### Option 1: Use with Codex + VS Code (Recommended)
 
 ```bash
-# Copy agents to your Claude Code directory
-cp -r agency-agents/* ~/.claude/agents/
+# from your workspace root
+cd /path/to/agency-agents
 
-# Now activate any agent in your Claude Code sessions:
-# "Hey Claude, activate Frontend Developer mode and help me build a React component"
+# install agents for Codex
+./scripts/install.sh --tool codex
 ```
 
-### Option 2: Use as Reference
+Then in Codex (inside VS Code), activate specialists directly in your prompt:
+
+```text
+Activate Frontend Developer and Backend Architect.
+Build the MVP auth flow for Ambassador OS with Supabase.
+```
+
+Need full GitHub + VS Code onboarding? See [integrations/codex/VSCODE-GITHUB-SETUP.md](integrations/codex/VSCODE-GITHUB-SETUP.md).
+
+### Option 2: Use with Claude Code
+
+```bash
+./scripts/install.sh --tool claude-code
+```
+
+### Option 3: Use as Reference
 
 Each agent file contains:
 - Identity & personality traits
@@ -44,7 +59,7 @@ Each agent file contains:
 
 Browse the agents below and copy/adapt the ones you need!
 
-### Option 3: Use with Other Tools (Cursor, Aider, Windsurf, Gemini CLI, OpenCode)
+### Option 4: Use with Other Tools (Cursor, Aider, Windsurf, Gemini CLI, OpenCode, OpenClaw)
 
 ```bash
 # Step 1 -- generate integration files for all supported tools
@@ -58,6 +73,7 @@ Browse the agents below and copy/adapt the ones you need!
 ./scripts/install.sh --tool copilot
 ./scripts/install.sh --tool aider
 ./scripts/install.sh --tool windsurf
+./scripts/install.sh --tool openclaw
 ```
 
 See the [Multi-Tool Integrations](#-multi-tool-integrations) section below for full details.
@@ -451,10 +467,11 @@ Each agent is designed with:
 
 ## 🔌 Multi-Tool Integrations
 
-The Agency works natively with Claude Code, and ships conversion + install scripts so you can use the same agents across every major agentic coding tool.
+The Agency works with Codex, Claude Code, and other major agentic tools. It ships conversion + install scripts so you can use the same agents everywhere.
 
 ### Supported Tools
 
+- **Codex (OpenAI)** — native `.md` agents via installer → `~/.codex/agents/agency-agents/`
 - **[Claude Code](https://claude.ai/code)** — native `.md` agents, no conversion needed → `~/.claude/agents/`
 - **[GitHub Copilot](https://github.com/copilot)** — native `.md` agents, no conversion needed → `~/.github/agents/`
 - **[Antigravity](https://github.com/google-gemini/antigravity)** — `SKILL.md` per agent → `~/.gemini/antigravity/skills/`
@@ -488,17 +505,18 @@ The installer scans your system for installed tools, shows a checkbox UI, and le
 
   System scan: [*] = detected on this machine
 
-  [x]  1)  [*]  Claude Code     (claude.ai/code)
-  [x]  2)  [*]  Copilot         (~/.github/agents)
-  [x]  3)  [*]  Antigravity     (~/.gemini/antigravity)
-  [ ]  4)  [ ]  Gemini CLI      (gemini extension)
-  [ ]  5)  [ ]  OpenCode        (opencode.ai)
-  [ ]  6)  [ ]  OpenClaw        (~/.openclaw)
-  [x]  7)  [*]  Cursor          (.cursor/rules)
-  [ ]  8)  [ ]  Aider           (CONVENTIONS.md)
-  [ ]  9)  [ ]  Windsurf        (.windsurfrules)
+  [x]  1)  [*]  Codex           (~/.codex/agents)
+  [x]  2)  [*]  Claude Code     (claude.ai/code)
+  [x]  3)  [*]  Copilot         (~/.github/agents)
+  [x]  4)  [*]  Antigravity     (~/.gemini/antigravity)
+  [ ]  5)  [ ]  Gemini CLI      (gemini extension)
+  [ ]  6)  [ ]  OpenCode        (opencode.ai)
+  [ ]  7)  [ ]  OpenClaw        (~/.openclaw)
+  [x]  8)  [*]  Cursor          (.cursor/rules)
+  [ ]  9)  [ ]  Aider           (CONVENTIONS.md)
+  [ ] 10)  [ ]  Windsurf        (.windsurfrules)
 
-  [1-9] toggle   [a] all   [n] none   [d] detected
+  [1-10] toggle   [a] all   [n] none   [d] detected
   [Enter] install   [q] quit
 ```
 
@@ -518,6 +536,23 @@ The installer scans your system for installed tools, shows a checkbox UI, and le
 ---
 
 ### Tool-Specific Instructions
+
+<details>
+<summary><strong>Codex (VS Code)</strong></summary>
+
+Agents are copied to `~/.codex/agents/agency-agents/`.
+
+```bash
+./scripts/install.sh --tool codex
+```
+
+Then activate in Codex:
+```
+Activate Backend Architect and Frontend Developer for this feature.
+```
+
+See [integrations/codex/README.md](integrations/codex/README.md) and [integrations/codex/VSCODE-GITHUB-SETUP.md](integrations/codex/VSCODE-GITHUB-SETUP.md) for details.
+</details>
 
 <details>
 <summary><strong>Claude Code</strong></summary>
@@ -692,7 +727,7 @@ When you add new agents or edit existing ones, regenerate all integration files:
 
 - [ ] Interactive agent selector web tool
 - [x] Multi-agent workflow examples -- see [examples/](examples/)
-- [x] Multi-tool integration scripts (Claude Code, GitHub Copilot, Antigravity, Gemini CLI, OpenCode, OpenClaw, Cursor, Aider, Windsurf)
+- [x] Multi-tool integration scripts (Codex, Claude Code, GitHub Copilot, Antigravity, Gemini CLI, OpenCode, OpenClaw, Cursor, Aider, Windsurf)
 - [ ] Video tutorials on agent design
 - [ ] Community agent marketplace
 - [ ] Agent "personality quiz" for project matching
@@ -744,8 +779,8 @@ Special recognition to the 50+ Redditors who requested this within the first 12 
 ## 🚀 Get Started
 
 1. **Browse** the agents above and find specialists for your needs
-2. **Copy** the agents to `~/.claude/agents/` for Claude Code integration
-3. **Activate** agents by referencing them in your Claude conversations
+2. **Install** agents for Codex or Claude Code (`./scripts/install.sh --tool codex` or `--tool claude-code`)
+3. **Activate** agents by referencing specialist names in your Codex/Claude conversations
 4. **Customize** agent personalities and workflows for your specific needs
 5. **Share** your results and contribute back to the community
 

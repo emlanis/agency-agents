@@ -8,6 +8,8 @@
 
 **NEXUS** (Network of EXperts, Unified in Strategy) turns The Agency's AI specialists into a coordinated pipeline. Instead of activating agents one at a time and hoping they work together, NEXUS defines exactly who does what, when, and how quality is verified at every step.
 
+> **Using Codex in VS Code?** Use the exact same activation prompts below. Keep one prompt per phase, and paste previous outputs directly into the next prompt.
+
 ## Choose Your Mode
 
 | I want to... | Use | Agents | Time |
@@ -135,9 +137,23 @@ Evidence Collector verifies improvements.
 | **Activation Prompts** | Ready-to-use agent prompts | `strategy/coordination/agent-activation-prompts.md` |
 | **Handoff Templates** | Standardized handoff formats | `strategy/coordination/handoff-templates.md` |
 | **Startup MVP Runbook** | 4-6 week MVP build | `strategy/runbooks/scenario-startup-mvp.md` |
+| **Ambassador OS MVP Runbook** | Web3 ambassador SaaS scenario | `strategy/runbooks/scenario-ambassador-os-mvp.md` |
+| **Ambassador OS Architecture** | X API + Supabase + Stripe blueprint | `strategy/runbooks/ambassador-os-architecture.md` |
 | **Enterprise Feature Runbook** | Enterprise feature development | `strategy/runbooks/scenario-enterprise-feature.md` |
 | **Marketing Campaign Runbook** | Multi-channel campaign | `strategy/runbooks/scenario-marketing-campaign.md` |
 | **Incident Response Runbook** | Production incident handling | `strategy/runbooks/scenario-incident-response.md` |
+
+---
+
+## 🧭 Codex + VS Code Operating Pattern
+
+1. Open the repo in VS Code.
+2. Start with one NEXUS prompt from this guide.
+3. Keep all phase outputs in a working notes file inside the repo.
+4. Paste full previous outputs into the next activation prompt (no summaries).
+5. Run the Reality Checker before moving from build to launch.
+
+Setup guide: `integrations/codex/VSCODE-GITHUB-SETUP.md`
 
 ---
 
